@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, END
 from graph.state import FoodRecommendationState
-from tools.zomato_mcp import ZomatoMCP
+from tools.swiggy_mcp import SwiggyMCP
 from llm.ollama_client import get_llm
 from agents.food_discovery_agent import FoodDiscoveryAgent
 from agents.nutrition_agent import NutritionAgent
@@ -8,10 +8,10 @@ from agents.recommendation_agent import RecommendationAgent
 
 
 def build_food_recommendation_graph(mcp_url: str):
-    zomato_tool = ZomatoMCP(mcp_url)
+    swiggy_tool = SwiggyMCP(mcp_url)
     llm = get_llm()
 
-    food_agent = FoodDiscoveryAgent(zomato_tool)
+    food_agent = FoodDiscoveryAgent(swiggy_tool)
     nutrition_agent = NutritionAgent(llm)
     recommendation_agent = RecommendationAgent(llm)
 

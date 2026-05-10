@@ -1,11 +1,11 @@
-# Zomato Food Recommendation System
+# Swiggy Food Recommendation System
 
 An **agentic AI system** leveraging **multi-agent orchestration** and **Model Context Protocol (MCP)** to provide personalized food recommendations based on nutritional goals, budget constraints, and location preferences.
 
 ## 🎯 Project Overview
 
 This project implements an intelligent food discovery and recommendation pipeline that:
-- **Discovers** healthy restaurant options via Zomato MCP tool integration
+- **Discovers** healthy restaurant options via Swiggy MCP tool integration
 - **Analyzes** nutritional profiles using local LLM inference (Ollama)
 - **Recommends** cuisine choices aligned with user health objectives
 
@@ -38,7 +38,7 @@ This implements the **State Machine** pattern with:
 
 ### 3. **Model Context Protocol (MCP) Integration**
 External tool access is abstracted via **MCP** standard, enabling:
-- **Pluggable Tool Integration**: Zomato data exposed as callable tools via HTTP
+- **Pluggable Tool Integration**: Swiggy data exposed as callable tools via HTTP
 - **MultiServerMCPClient**: Dynamic tool discovery and invocation
 - **Async Tool Calling**: Non-blocking tool execution via `ainvoke()`
 
@@ -82,7 +82,7 @@ External data access via Model Context Protocol:
 ## 📋 Project Structure
 
 ```
-zomato-food-recommendation/
+swiggy-food-recommendation/
 ├── main.py                          # Entry point & orchestration
 ├── requirements.txt                 # Python dependencies
 │
@@ -100,7 +100,7 @@ zomato-food-recommendation/
 │   └── ollama_client.py            # ChatOllama configuration
 │
 ├── tools/                          # External tool integration
-│   └── zomato_mcp.py              # MCP client for Zomato tools
+│   └── swiggy_mcp.py              # MCP client for Swiggy tools
 │
 ├── prompts/                        # Prompt templates
 │   ├── nutrition_prompt.py         # Nutrition estimation & reasoning prompts
@@ -117,7 +117,7 @@ zomato-food-recommendation/
 ### Prerequisites
 - Python 3.8+
 - Ollama running locally on `http://localhost:11434`
-- Zomato MCP server accessible and running
+- Swiggy MCP server accessible and running
 - (Optional) LangSmith API key for observability
 
 ### Installation
@@ -125,7 +125,7 @@ zomato-food-recommendation/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd zomato-food-recommendation
+   cd swiggy-food-recommendation
    ```
 
 2. **Create a virtual environment**
@@ -147,11 +147,11 @@ zomato-food-recommendation/
    ```
 
 5. **Configure MCP Server**
-   - Update `.vscode/mcp.json` with your Zomato MCP server URL:
+   - Update `.vscode/mcp.json` with your Swiggy MCP server URL:
      ```json
      {
        "servers": {
-         "zomato-mcp": {
+         "swiggy-food": {
            "transport": "http",
            "url": "http://your-mcp-server:port"
          }
@@ -178,7 +178,7 @@ Before running the application, ensure:
 | Component | Purpose | Setup |
 |-----------|---------|-------|
 | **Ollama** | Local LLM execution for nutrition analysis & recommendations | Install from [ollama.ai](https://ollama.ai), pull `llama3` model, keep server running on port 11434 |
-| **Zomato MCP Server** | External tool providing restaurant & menu data | Deploy/start your Zomato MCP server, note the URL (e.g., `http://localhost:8000`) |
+| **Swiggy MCP Server** | External tool providing restaurant & menu data | Deploy/start your Swiggy MCP server, note the URL (e.g., `http://localhost:8000`) |
 | **Python Dependencies** | Required packages listed in `requirements.txt` | Install via `pip install -r requirements.txt` |
 | **LangSmith (Optional)** | Observability & tracing for agent execution | Set `LANGSMITH_API_KEY` in `.env` for production monitoring |
 
@@ -229,7 +229,7 @@ Based on your weight loss goal and ₹300 budget, I recommend:
 ### Phase 1: Food Discovery
 **Agent**: `FoodDiscoveryAgent`
 - **Input**: user_query, budget, distance_km
-- **Operation**: Calls Zomato MCP tool `search_healthy_food()`
+- **Operation**: Calls Swiggy MCP tool `search_healthy_food()`
 - **Processing**: Normalizes heterogeneous API responses into uniform schema
 - **Output**: Populates `state["restaurant"]` with filtered options
 
@@ -263,7 +263,7 @@ Agents don't mutate state in-place; each returns a new state dict:
 - Reduces side effects and debugging surface
 
 ### 3. **Resilience & Graceful Degradation**
-- Missing Zomato results → empty list (not crash)
+- Missing Swiggy results → empty list (not crash)
 - LLM JSON parsing fails → logged warning + fallback
 - Tool not found → error logged, execution continues
 
@@ -322,7 +322,7 @@ Based on your weight loss goal and ₹300 budget, I recommend:
 ### Environment Variables (`.env`)
 ```env
 LANGSMITH_API_KEY=your_langsmith_api_key
-LANGSMITH_PROJECT=zomato-recommendations
+LANGSMITH_PROJECT=swiggy-food-recommendation
 OLLAMA_MODEL=llama3
 OLLAMA_TEMPERATURE=0
 ```
@@ -331,7 +331,7 @@ OLLAMA_TEMPERATURE=0
 ```json
 {
   "servers": {
-    "zomato-mcp": {
+    "swiggy-food": {
       "transport": "http",
       "url": "http://localhost:8000"
     }
@@ -350,7 +350,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 ### Inspect MCP Tools
 ```bash
-# In zomato_mcp.py, tools are discovered at runtime:
+# In swiggy_mcp.py, tools are discovered at runtime:
 available_tools = await client.get_tools()
 print([t.name for t in available_tools])
 ```
@@ -364,7 +364,7 @@ print([t.name for t in available_tools])
 
 ## 🚦 Common Issues & Troubleshooting
 
-### Issue: "Zomato MCP returned no results"
+### Issue: "Swiggy MCP returned no results"
 **Cause**: MCP server not running or unreachable
 **Solution**: 
 - Verify `.vscode/mcp.json` URL is correct
@@ -373,8 +373,8 @@ print([t.name for t in available_tools])
 ### Issue: "Tool 'search_healthy_food' not found"
 **Cause**: MCP tool name mismatch or server not loaded
 **Solution**:
-- Run `ZomatoMCP._call_tool_async()` with logging to inspect available tools
-- Ensure Zomato MCP server has exported the tool correctly
+- Run `SwiggyMCP._call_tool_async()` with logging to inspect available tools
+- Ensure Swiggy MCP server has exported the tool correctly
 
 ### Issue: "Failed to parse nutrition estimate"
 **Cause**: LLM returned non-JSON or malformed response

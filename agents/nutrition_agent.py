@@ -7,7 +7,7 @@ from prompts.nutrition_prompt import (
     build_nutrition_reasoning_prompt,
 )
 
-logger = logging.getLogger("zomato-food-recommendation")
+logger = logging.getLogger("swiggy-food-recommendation")
 
 
 class NutritionAgent(BaseAgent):
@@ -71,6 +71,11 @@ class NutritionAgent(BaseAgent):
             }
 
     def execute(self, state: dict) -> dict:
+        if not state["restaurant"]:
+            logger.warning("No restaurant data available, skipping nutrition analysis")
+            state["nutrition_result"] = []
+            return state
+
         nutrition_result = []
 
         for item in state["restaurant"]:

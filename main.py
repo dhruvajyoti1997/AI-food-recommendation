@@ -11,11 +11,11 @@ logging.basicConfig(
         logging.StreamHandler(),
     ],
 )
-logger = logging.getLogger("zomato-food-recommendation")
+logger = logging.getLogger("swiggy-food-recommendation")
 
 with open(".vscode/mcp.json", "r") as f:
     mcp_config = json.load(f)
-    mcp_url = mcp_config["servers"]["zomato-mcp"]["url"]
+    mcp_url = mcp_config["servers"]["swiggy-food"]["url"]
 
 
 def main():

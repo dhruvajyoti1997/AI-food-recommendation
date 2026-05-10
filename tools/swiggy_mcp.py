@@ -5,15 +5,15 @@ from typing import Optional
 from langchain_mcp_adapters import client
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
-logger = logging.getLogger("zomato-food-recommendation")
+logger = logging.getLogger("swiggy-food-recommendation")
 
 
-class ZomatoMCP:
+class SwiggyMCP:
 
     def __init__(self, mcp_url: str):
         self.mcp_url = mcp_url
         self.server_config = {
-            "zomato-mcp": {
+            "swiggy-food": {
                 "transport": "http",
                 "url": self.mcp_url,
             }
@@ -33,7 +33,7 @@ class ZomatoMCP:
             logger.debug("Calling MCP tool '%s' with args: %s", tool_name, tool_args)
             client = MultiServerMCPClient(self.server_config)
             tools = await client.get_tools()
-            logger.debug("Available Zomato MCP tools: %s", [t.name for t in tools])
+            logger.debug("Available Swiggy MCP tools: %s", [t.name for t in tools])
 
             tool = next((t for t in tools if t.name == tool_name), None)
             if not tool:
@@ -90,7 +90,7 @@ class ZomatoMCP:
 
         tool_args = {
             "keyword": keyword,
-            "address_id": "",          # FIX: empty until real Zomato address_id available
+            "address_id": "",
             "filter": {
                 "max_price": budget,
                 "distance": distance_km,
@@ -102,7 +102,7 @@ class ZomatoMCP:
                 self._call_tool_async("get_restaurants_for_keyword", tool_args)
             )
             result = self._parse_result(raw)
-            logger.info("Found %d results from Zomato MCP", len(result))
+            logger.info("Found %d results from Swiggy MCP", len(result))
             return result
 
         except Exception as e:

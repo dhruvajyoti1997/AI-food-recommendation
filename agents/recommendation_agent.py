@@ -8,6 +8,10 @@ class RecommendationAgent(BaseAgent):
         self.llm = llm
 
     def execute(self, state):
+        if not state["nutrition_result"]:
+            state["final_recommendation"] = "No restaurant data available from Swiggy MCP. Please check your MCP server configuration and try again."
+            return state
+
         prompt = build_recommendation_prompt(
             state["goal"],
             state["budget"],

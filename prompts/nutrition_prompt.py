@@ -1,9 +1,12 @@
 import logging
 
-logger = logging.getLogger("zomato-food-recommendation")
+logger = logging.getLogger("swiggy-food-recommendation")
 
+
+import time
 
 def build_nutrition_estimation_prompt(dish_name: str) -> str:
+    timestamp = int(time.time())
     return f"""
 You are a nutrition database expert with deep knowledge of food composition.
 
@@ -21,6 +24,8 @@ Return ONLY this strict JSON with no explanation, no markdown, no preamble:
   "carbs": "<number>g",
   "fat": "<number>g"
 }}
+
+Timestamp: {timestamp}
 """
 
 
@@ -30,6 +35,7 @@ def build_nutrition_reasoning_prompt(goal: str, nutritional_info: dict) -> str:
         goal,
         nutritional_info,
     )
+    timestamp = int(time.time())
     return f"""
 You are a nutrition expert.
 
@@ -47,4 +53,6 @@ Return JSON in this format:
   "suitable_for_goal": true,
   "reason": "short explanation"
 }}
+
+Timestamp: {timestamp}
 """

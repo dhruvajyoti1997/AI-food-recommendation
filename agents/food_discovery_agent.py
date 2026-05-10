@@ -2,13 +2,13 @@ import json
 import logging
 from agents.base_agent import BaseAgent
 
-logger = logging.getLogger("zomato-food-recommendation")
+logger = logging.getLogger("swiggy-food-recommendation")
 
 
 class FoodDiscoveryAgent(BaseAgent):
 
-    def __init__(self, zomato_tool):
-        self.zomato_tool = zomato_tool
+    def __init__(self, swiggy_tool):
+        self.swiggy_tool = swiggy_tool
 
     def _normalise_restaurants(self, raw: list) -> list:
         self._log_raw_shape(raw)
@@ -67,19 +67,19 @@ class FoodDiscoveryAgent(BaseAgent):
 
     def _log_raw_shape(self, raw: list):
         logger.info("=" * 60)
-        logger.info("RAW ZOMATO MCP RESPONSE — inspect to confirm shape:")
+        logger.info("RAW SWIGGY MCP RESPONSE — inspect to confirm shape:")
         logger.info(json.dumps(raw[:2], indent=2, default=str))  # log first 2 entries only
         logger.info("=" * 60)
 
     def execute(self, state: dict) -> dict:
-        raw = self.zomato_tool.search_healthy_food(
+        raw = self.swiggy_tool.search_healthy_food(
             ##location=state["location"],
             budget=state["budget"],
             distance_km=state["distance_km"],
         )
         if not raw:
             logger.warning(
-                "Zomato MCP returned no results. "
+                "Swiggy MCP returned no results. "
                 "Check: (1) OAuth approved? (3) budget sufficient?"
             )
             state["restaurant"] = []
